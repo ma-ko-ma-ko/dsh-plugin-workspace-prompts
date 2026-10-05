@@ -29,6 +29,20 @@ test('an absolute configured file is used as written', () => {
   assert.equal(file, resolve('D:\\data\\p.json'))
 })
 
+test('a Windows absolute path is not joined onto the harness home on POSIX', () => {
+  // The loader may name a Windows path while the harness runs on Linux; the
+  // host's own `isAbsolute` would call `D:\data\p.json` relative and anchor it,
+  // which is the bug this pins.
+  const file = resolveStoreFile({ file: 'D:\\data\\p.json' }, { env: { DSH_HOME: '/home/me/.dsh' } })
+  assert.equal(file.includes('/home/me/.dsh'), false, `the anchor must not be prepended: ${file}`)
+  assert.match(file, /data/)
+})
+
+test('a POSIX absolute path is not joined onto the harness home on Windows', () => {
+  const file = resolveStoreFile({ file: '/var/lib/prompts.json' }, { env: { DSH_HOME: 'D:\\homes\\dsh' } })
+  assert.equal(file.includes('homes'), false, `the anchor must not be prepended: ${file}`)
+})
+
 test('a relative configured file resolves against the profile directory', () => {
   const file = resolveStoreFile(
     { file: './workspace-prompts.json' },
