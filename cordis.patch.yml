@@ -1,0 +1,23 @@
+# Copy these rows into the patch layer of the profile that should mount this
+# plugin — `$DSH_HOME/profiles/<your-profile>/cordis.patch.yml`.
+#
+# A patch entry targets an existing row by `id`, so a new plugin is added through
+# an `insert` list. Every field is optional: the bare insert below is a complete,
+# working configuration.
+#
+# `file` defaults to `$DSH_HOME/workspace-prompts.json`. A relative value is
+# anchored to the profile directory when the host supplies one, so pin it to an
+# absolute path if the exact location matters to you.
+- insert:
+    - id: workspace-prompts
+      name: dsh-plugin-workspace-prompts
+      config:
+        # file: ./workspace-prompts.json
+        # includeWorkspaceHeader: true
+        # sectionTitle: Workspace instructions
+        # order: 500
+        # maxPromptBytes: 32768
+        # registerTools: true
+        # prompts:
+        #   '*': Standing instructions that apply to every workspace.
+        #   'F:\projects\api': Instructions injected for sessions under that directory.
