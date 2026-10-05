@@ -39,7 +39,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test test/paths.test.js test/resolve.test.js test/config.test.js test/store.test.js test/http.test.js test/client.test.js test/integration.test.js",
     "test:profile": "node scripts/verify-profile.mjs"
   },
   "peerDependencies": {
