@@ -12,10 +12,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        # Node 24 is the current LTS line and what the harness itself runs on.
-        # Node 20 is deliberately absent: the runner now forces the checkout and
-        # setup-node actions onto Node 24, and a job that still asks for 20 fails
-        # inside setup-node before any test runs.
+        # Node 24 is the current LTS line and what the harness runs on. Node 20
+        # is deliberately absent: the runners now force the checkout and
+        # setup-node actions onto Node 24, and a job that still asks for 20
+        # fails inside setup-node before any test runs.
         node: [22, 24]
     steps:
       - uses: actions/checkout@v4
@@ -25,4 +25,16 @@ jobs:
       # The plugin has no dependencies of its own, so this install resolves
       # nothing and needs no registry beyond the checkout.
       - run: npm install --no-audit --no-fund
-      - run: npm test
+      - name: Report the environment
+        shell: bash
+        run: |
+          echo "node: $(node --version)"
+          echo "npm:  $(npm --version)"
+          echo "cwd:  $(pwd)"
+          ls -la
+          ls -la test
+      - name: Run the suite
+        shell: bash
+        run: |
+          set -o pipefail
+          node --test test/paths.test.js test/resolve.test.js test/config.test.js test/store.test.js test/http.test.js test/client.test.js test/integration.test.js 2>&1 | tail -60
