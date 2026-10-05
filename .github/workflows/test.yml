@@ -12,11 +12,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [20, 22]
+        # Node 24 is the current LTS line and what the harness itself runs on.
+        # Node 20 is deliberately absent: the runner now forces the checkout and
+        # setup-node actions onto Node 24, and a job that still asks for 20 fails
+        # inside setup-node before any test runs.
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+      # The plugin has no dependencies of its own, so this install resolves
+      # nothing and needs no registry beyond the checkout.
       - run: npm install --no-audit --no-fund
       - run: npm test
