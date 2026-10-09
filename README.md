@@ -14,16 +14,32 @@ A prompt registered for `F:\projects\api` also covers `F:\projects\api\src\v2`; 
 
 ## Install
 
-The plugin is a normal DSH profile plugin. From your harness home:
+### Prerequisite: a `git` executable on PATH
+
+Both routes below go through `pnpm`, and **`pnpm` runs `git ls-remote` even when the package is a
+local directory**. Without a working `git` command the install fails with:
+
+```
+Command failed with exit code 1: git ls-remote "..." HEAD "HEAD^{}"
+'git' is not recognized as an internal or external command
+```
+
+Install [Git for Windows](https://git-scm.com/download/win), keep the default *"Git from the
+command line and also from 3rd-party software"* option, then **restart the app completely**
+(close the window, quit from the tray) so it picks up the new `PATH`.
+
+No git? Copy the folder in by hand - see [Install without git](#install-without-git).
+
+### Route 1: a local checkout
 
 ```bash
 dsh plugin --profile <your-profile> add /path/to/dsh-plugin-workspace-prompts
 ```
 
-Or from a Git checkout, which is what `pnpm` understands natively:
+### Route 2: straight from GitHub
 
 ```bash
-dsh plugin --profile <your-profile> add github:<you>/dsh-plugin-workspace-prompts
+dsh plugin --profile <your-profile> add github:ma-ko-ma-ko/dsh-plugin-workspace-prompts
 ```
 
 Then mount the row in the profile's own patch layer, `$DSH_HOME/profiles/<your-profile>/cordis.patch.yml`.
@@ -38,6 +54,19 @@ A patch entry targets an existing row by `id`, so a *new* plugin is added throug
 
 The profile reloads on a patch change when `dsh-hmr` is active; otherwise restart the app. Verify the row is live with `dsh --profile <your-profile> --dump-config`, which prints the composed tree.
 
+<a id="install-without-git"></a>
+### Install without git
+
+This package is plain ESM with **no dependencies and no build step**, so copying the folder *is* a
+complete install - no `pnpm` involved:
+
+1. Put the package at `$DSH_HOME/profiles/<your-profile>/node_modules/dsh-plugin-workspace-prompts`
+   (create `node_modules` if it does not exist).
+2. Add the `insert` row above to the profile's `cordis.patch.yml`.
+3. Restart the app completely, then press **Ctrl+Shift+R** in the browser once.
+
+Step 3 matters: the browser half is fetched by build hash, so a page cached across a restart asks
+for chunks that no longer exist and the settings page can come up blank. A hard refresh clears it.
 The browser half is discovered from this package's own `dsh.client` declaration and `exports["./client"]`, so no second profile row is needed for it. It is assembled at startup, which means **one app restart is required after installing or updating the plugin**. Editing the store file, using the tools, or saving from the page never needs a restart.
 
 ## Configure
