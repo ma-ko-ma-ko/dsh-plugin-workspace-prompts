@@ -14,6 +14,21 @@ A prompt registered for `F:\projects\api` also covers `F:\projects\api\src\v2`; 
 
 ## Install
 
+### Route 0: the Plugins panel (recommended)
+
+This package declares a bundle (`dsh.bundle.patch`), so the harness can install and enable it
+like any other bundle: open the sidebar **Plugins** panel, choose **Add plugin**, and give it
+
+```
+github:ma-ko-ma-ko/dsh-plugin-workspace-prompts
+```
+
+Enabling the bundle applies its patch 鈥?the row that mounts the plugin 鈥?to the profile, so
+**there is no `cordis.patch.yml` to edit by hand**. This route still needs `git` on `PATH` (see
+below), because `pnpm` resolves the Git address before the harness ever sees the package.
+
+Without the bundle declaration the panel refuses the package with
+`this package does not declare a bundle and cannot be managed as a plugin`.
 ### Prerequisite: a `git` executable on PATH
 
 Both routes below go through `pnpm`, and **`pnpm` runs `git ls-remote` even when the package is a
@@ -30,13 +45,13 @@ command line and also from 3rd-party software"* option, then **restart the app c
 
 No git? Copy the folder in by hand - see [Install without git](#install-without-git).
 
-### Route 1: a local checkout
+### Route 1: a local checkout (command line)
 
 ```bash
 dsh plugin --profile <your-profile> add /path/to/dsh-plugin-workspace-prompts
 ```
 
-### Route 2: straight from GitHub
+### Route 2: straight from GitHub (command line)
 
 ```bash
 dsh plugin --profile <your-profile> add github:ma-ko-ma-ko/dsh-plugin-workspace-prompts
